@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  rapid-db:
+    image: alpine/sqlite
+    container_name: rapid-container-db
+    restart: always
+    volumes:
+      - data_dev:/var/lib/sqlite
+    environment:
+      - "SQLITE_DB=/var/lib/sqlite/your_dev_db.sqlite3"
+    ports:
+      - "5000:5000"
+
+  rapid-app:
+    image: rapid-app-image:v1
+    container_name: rapid-container-app
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    ports:
+      - "8080:8000"
+    depends_on:
+      - rapid-db
+
+volumes:
+  data_dev:
