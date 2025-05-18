@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rapid-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rapid-db
+  template:
+    metadata:
+      labels:
+        app: rapid-db
+    spec:
+      containers:
+        - name: rapid-db-container
+          image: alpine/sqlite
+          ports:
+          - containerPort: 5000
+          volumeMounts:
+          - name: data-db-volume
+            mountPath: /var/lib/sqlite
+          env:
+          - name: SECRET_KEY
+            value: helloworld
+          - name: DATABASE_NAME
+            value: ""
+          - name: DATABASE_USER
+            value: ""
+          - name: DATABASE_PASS
+            value: ""
+          - name: DATABASE_IP
+            value: ""
+      volumes:
+        - name: data-db-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rapid-db-service
+spec:
+  selector:
+    app: rapid-db
+  ports:
+  - port: 5000
+    targetPort: 5000

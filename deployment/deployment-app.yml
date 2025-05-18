@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rapid-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rapid-app
+  template:
+    metadata:
+      labels:
+        app: rapid-app
+    spec:
+      containers:
+      - name: rapid-app-container
+        image: zakir22/django-app:v1
+        ports:
+        - containerPort: 8000
+        env:
+        - name: SECRET_KEY
+          value: helloworld
+        - name: EMAIL_HOST_USER
+          value: ""
+        - name: EMAIL_HOST_PASSWORD
+          value: ""
+        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+          value: 
+        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+          value: 
+        - name: STRIPE_PUBLIC_KEY
+          value: 
+        - name: STRIPE_SECRET_KEY
+          value: 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rapid-app-service
+spec:
+  type: NodePort
+  selector:
+    app: rapid-app
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30080
